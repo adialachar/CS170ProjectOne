@@ -1,5 +1,15 @@
 
 
+def MisplacedTileCalculator(list):
+    solution = ([1,2,3], [4,5,6], [7,8,0])
+    MisplacedTiles = 0
+    for i in range (0,3):
+
+        for j in range (0,3):
+            if (solution[i][j] != list[i][j]):
+                MisplacedTiles += 1
+
+    return MisplacedTiles
 
 
 
@@ -54,8 +64,14 @@ def main():
     puzzleTwo = list(([1,2,0], [4,6,3], [7,5,8]))
     a = ManhattanDistanceCalculator(puzzleOne)
     b = ManhattanDistanceCalculator(puzzleTwo)
+    print("Manhattan")
     print(a)
     print(b)
+    c = MisplacedTileCalculator(puzzleOne)
+    d = MisplacedTileCalculator(puzzleTwo)
+    print("Misplaced Tiles")
+    print(c)
+    print(d)
     #provide room for user input here
 
 
