@@ -1,17 +1,18 @@
-from copy import deepcopy
+from copy import deepcopy 
+
+
+solution = ([1,2,3], [4,5,6], [7,8,0]) #The solution to the 8-tile problem. 
+#If you want to change the goal state, change this array
+ 
 
 
 
-
-
-
-
-def MisplacedTileCalculator(list):
-    solution = ([1,2,3], [4,5,6], [7,8,0])
+def MisplacedTileCalculator(list): #Calculates and returns the number of misplaced tiles in a 2-D array
+    
     MisplacedTiles = 0
-    for i in range (0,3):
+    for i in range (0,len(list)):
 
-        for j in range (0,3):
+        for j in range (0,len(list)):
             if (solution[i][j] != list[i][j]):
                 MisplacedTiles += 1
 
@@ -19,26 +20,23 @@ def MisplacedTileCalculator(list):
 
 
 
-def ManhattanDistanceCalculator(list):
-    
-    solution = ([1,2,3], [4,5,6], [7,8,0])
+def ManhattanDistanceCalculator(list): #Calculates and returns the Manhattan distance for a 2-D array
+
     ManhattanDistance = 0
-    for i in range(0, 3):
+    for i in range(0, len(list)):
         
-        for j in range (0, 3):
+        for j in range (0, len(list)):
 
             solVal = solution[i][j]
-            #print("Solution Value is {}".format(solVal))
 
-            for k in range (0,3):
-                for l in range (0,3):
+            for k in range (0,len(list)):
+                for l in range (0,len(list)):
 
                     currVal = list[k][l]
-                    #print("Current Value is {}".format(currVal))
 
                     if (currVal == solVal):
                         ManhattanDistance += (abs(i - k) + abs( j - l))
-                        #print("Current Manhattan Distance is {}".format(ManhattanDistance))
+                        
 
     return ManhattanDistance
 
@@ -63,8 +61,8 @@ def expand(dict, heuristicCalculator):
     #find the 0
     puzzle = dict['puzzle']
 
-    for i in range (0,3):
-        for j in range (0,3):
+    for i in range (0,len(puzzle)):
+        for j in range (0,len(puzzle)):
             print(puzzle[i][j])
             if (puzzle[i][j] == 0):
                 a = deepcopy(i)
@@ -183,7 +181,7 @@ def UniformCostCalculator(list):
 
 def ASTAR(list, heuristicCalculator):
 
-    solution = ([1,2,3] , [4,5,6] , [7,8,0])
+    #solution = ([1,2,3] , [4,5,6] , [7,8,0])
         
     if (len(list) == 0):
         return False
@@ -294,7 +292,7 @@ def main():
     Input = [e]
 
         #figure out how to take 3 numbers from the thing
-
+    print("HELLO ADITYA. The length of solution is {}".format(len(solution)))
     #print(type(Input))
     #Manhattan(Input)
     #provide room for user input here
