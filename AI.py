@@ -245,9 +245,24 @@ def main():
     print(e['h(n)'])
     #expandManhattan(e)
     Input = [e]
-    print(type(Input))
-    Manhattan(Input)
+    print("Welcome to Aditya Acharya's 8-puzzle solver.")
+    print("Type '1' to use a default puzzle, or '2' to enter your own puzzle.")
+    #userChoice = input("Type '1' to use a default puzzle, or '2' to enter your own puzzle.")
+    userChoice = int(input())
+
+    if(userChoice == 2):
+        print("Enter your puzzle use a zero to represent the blank")
+        #figure out how to take 3 numbers from the thing
+
+    #print(type(Input))
+    #Manhattan(Input)
     #provide room for user input here
+
+    print("Enter your choice of algorithm")
+    print(" 1. Uniform Cost Search")
+    print(" 2. A* with the Misplaced Tile heruistic.")
+    print(" 3. A* with the Manhattan distance heuristic")
+    userChoice = int(input())
 
 
 
