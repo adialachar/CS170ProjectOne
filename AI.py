@@ -2,6 +2,10 @@ from copy import deepcopy
 
 
 
+
+
+
+
 def MisplacedTileCalculator(list):
     solution = ([1,2,3], [4,5,6], [7,8,0])
     MisplacedTiles = 0
@@ -40,6 +44,10 @@ def ManhattanDistanceCalculator(list):
 
 
 
+
+
+
+
 def InputFormatting(puzzle, a, b):
 
 
@@ -50,7 +58,7 @@ def InputFormatting(puzzle, a, b):
 
 
 
-def expandManhattan(dict):
+def expand(dict, heuristicCalculator):
 
     #find the 0
     puzzle = dict['puzzle']
@@ -138,19 +146,20 @@ def expandManhattan(dict):
     for i in range (0, len(children)):
 
         children[i]['g(n)'] += 1
-        children[i]['h(n)'] = ManhattanDistanceCalculator(children[i]['puzzle'])
+        children[i]['h(n)'] = heuristicCalculator(children[i]['puzzle'])
         #print("The manhattan distance for this node is {}".format(children[i]['h(n)']))
 
 
     return children
     
 
+#def expandMisplacedTile():
 
 
 
 
 
-def UniformCostSearch():
+def UniformCostCalculator(list):
 
     #arguments for pseudocode are problem, queueing-function
     #nodese = make-queue(make-node(problem.InitialState))
@@ -159,20 +168,20 @@ def UniformCostSearch():
     #   node = Remove-Front(nodes)
     #   if problem.GOAL-StATE(node.STATE) succeeds then return node
     #nodes = QUEUEingfunction(nodes, expand(node, problem.operator)
-    
-
-    
-
-
-
-
+        
 
     return 0
 
 
 
 
-def Manhattan(list):
+
+    
+
+
+
+
+def ASTAR(list, heuristicCalculator):
 
     solution = ([1,2,3] , [4,5,6] , [7,8,0])
         
@@ -213,10 +222,10 @@ def Manhattan(list):
 
 
 
-    mergedlist = list + expandManhattan(node)
+    mergedlist = list + expand(node,heuristicCalculator)
     #then just make a recrusive call with the new list appended to the old one, right?
     #oh its not that simple
-    return Manhattan(mergedlist)
+    return ASTAR(mergedlist,heuristicCalculator)
     
 
 
@@ -239,12 +248,12 @@ def main():
     #print("Misplaced Tiles")
     #print(c)
     #print(d)
-    e = InputFormatting(puzzleOne,5,6)
+    e = InputFormatting(puzzleOne,0,0)
     print(e['puzzle'])
     print(e['g(n)'])
     print(e['h(n)'])
     #expandManhattan(e)
-    Input = [e]
+    #Input = [e]
     print("Welcome to Aditya Acharya's 8-puzzle solver.")
     print("Type '1' to use a default puzzle, or '2' to enter your own puzzle.")
     #userChoice = input("Type '1' to use a default puzzle, or '2' to enter your own puzzle.")
@@ -252,20 +261,57 @@ def main():
 
     if(userChoice == 2):
         print("Enter your puzzle use a zero to represent the blank")
+        print("Use commas to seperate the numbers")
+        print("Input should look like 1,2,3 (press enter) 4,5,6 (press enter) 7,8,0 (press enter)")
+        a = input()
+        b = input()
+        c = input()
+        
+        counter = 0
+        for i in range (0, len(a)):
+            if (a[i] != ' ' and a[i] != ','):
+                e['puzzle'][0][counter] = int(a[i])
+                print("These numbers should be equal {} <-----> {}".format(int(a[i]), e['puzzle'][0][counter]))
+                print("Counter is {}".format(counter))
+                counter += 1
+
+
+        counter = 0
+
+        for i in range (0, len(b)):
+            if (b[i] != ' ' and b[i] != ','):
+                e['puzzle'][1][counter] = int(b[i])
+                counter += 1
+        counter = 0
+
+        for i in range (0, len(c)):
+            if (c[i] != ' ' and c[i] != ','):
+                e['puzzle'][2][counter] = int(c[i])
+                counter += 1
+
+        print(e['puzzle'])
+
+    Input = [e]
+
         #figure out how to take 3 numbers from the thing
 
     #print(type(Input))
     #Manhattan(Input)
     #provide room for user input here
-
+    
     print("Enter your choice of algorithm")
     print(" 1. Uniform Cost Search")
     print(" 2. A* with the Misplaced Tile heruistic.")
     print(" 3. A* with the Manhattan distance heuristic")
     userChoice = int(input())
-
-
-
+    if userChoice == 1:
+        ASTAR(Input,UniformCostCalculator) 
+    elif userChoice == 2:
+        ASTAR(Input, MisplacedTileCalculator)
+    elif userChoice == 3:
+        ASTAR(Input, ManhattanDistanceCalculator)
+    
+    
 
 
 
