@@ -24,17 +24,17 @@ def ManhattanDistanceCalculator(list):
         for j in range (0, 3):
 
             solVal = solution[i][j]
-            print("Solution Value is {}".format(solVal))
+            #print("Solution Value is {}".format(solVal))
 
             for k in range (0,3):
                 for l in range (0,3):
 
                     currVal = list[k][l]
-                    print("Current Value is {}".format(currVal))
+                    #print("Current Value is {}".format(currVal))
 
                     if (currVal == solVal):
                         ManhattanDistance += (abs(i - k) + abs( j - l))
-                        print("Current Manhattan Distance is {}".format(ManhattanDistance))
+                        #print("Current Manhattan Distance is {}".format(ManhattanDistance))
 
     return ManhattanDistance
 
@@ -90,30 +90,60 @@ def expandManhattan(dict):
     
     print( "left {0}, right {1}, up {2}, down {3}".format(left, right, up, down))
 
-
+    children = []
 
     if(left):
         LeftChange = deepcopy(dict)
         #swap we are using for now
-        temp = LeftChange['puzzle'][a-1][b]
-        LeftChange['puzzle'][a-1][b] = LeftChange['puzzle'][a][b]
+        temp = LeftChange['puzzle'][a][b - 1]
+        LeftChange['puzzle'][a][b - 1] = LeftChange['puzzle'][a][b]
         LeftChange['puzzle'][a][b] = temp
-
-        LeftChange['g(n)'] += 1
-        LeftChange['h(n)'] = MannhattanDistanceCalculator(LeftChange['puzzle'])
+        #print("LEft Boi")
+        #print(LeftChange['puzzle'])
+        children.append(LeftChange)
+        #LeftChange['g(n)'] += 1
+        #LeftChange['h(n)'] = MannhattanDistanceCalculator(LeftChange['puzzle'])
 
     if(right):
         RightChange = deepcopy(dict)
 
+        temp = RightChange['puzzle'][a][b + 1]
+        RightChange['puzzle'][a][b+1] = RightChange['puzzle'][a][b]
+        RightChange['puzzle'][a][b] = temp
+        children.append(RightChange)
+    
         #same as above
     if(up):
         UpChange = deepcopy(dict)
+        temp = UpChange['puzzle'][a - 1][b]
+        UpChange['puzzle'][a - 1][b] = UpChange['puzzle'][a][b]
+        UpChange['puzzle'][a][b] = temp
+        #print("Up Boi")
+        #print(UpChange['puzzle'])
+        children.append(UpChange)
+
+
+
 
     if(down):
         DownChange = deepcopy(dict)
+        temp = DownChange['puzzle'][a + 1][b]
+        DownChange['puzzle'][a + 1][b] = DownChange['puzzle'][a][b]
+        DownChange['puzzle'][a][b] = temp
+        #print("Down Boi")
+        #print(DownChange['puzzle'])
+        children.append(DownChange)
 
 
+    for i in range (0, len(children)):
 
+        children[i]['g(n)'] += 1
+        children[i]['h(n)'] = ManhattanDistanceCalculator(children[i]['puzzle'])
+        #print("The manhattan distance for this node is {}".format(children[i]['h(n)']))
+
+
+    return children
+    
 
 
 
@@ -129,7 +159,66 @@ def UniformCostSearch():
     #   node = Remove-Front(nodes)
     #   if problem.GOAL-StATE(node.STATE) succeeds then return node
     #nodes = QUEUEingfunction(nodes, expand(node, problem.operator)
+    
+
+    
+
+
+
+
+
     return 0
+
+
+
+
+def Manhattan(list):
+
+    solution = ([1,2,3] , [4,5,6] , [7,8,0])
+        
+    if (len(list) == 0):
+        return False
+
+    #node = list.pop([0])
+
+    #find the min of the heuristics, and then only expand that one. ahhhh ok
+    minimum = 9999
+    minimumIndex = 0
+    for i in range (0, len(list)):
+            #find the min of the heuristics
+            if ((list[i]['g(n)'] + list[i]['h(n)']) < minimum):
+                minimumIndex = deepcopy(i)
+                minimum = list[i]['g(n)'] + list[i]['h(n)']
+
+
+
+   
+
+
+    node = list.pop(minimumIndex) 
+    print(node) 
+
+    #if (node['puzzle'] == solution):
+     #   return node
+
+    counter = 0
+    for i in range (0, 3):
+        for j in range (0,3):
+            if node['puzzle'][i][j] == solution[i][j]:
+                counter += 1
+
+    if(counter == 9):
+        return node
+
+
+
+
+    mergedlist = list + expandManhattan(node)
+    #then just make a recrusive call with the new list appended to the old one, right?
+    #oh its not that simple
+    return Manhattan(mergedlist)
+    
+
 
 
 
@@ -154,7 +243,10 @@ def main():
     print(e['puzzle'])
     print(e['g(n)'])
     print(e['h(n)'])
-    expandManhattan(e)
+    #expandManhattan(e)
+    Input = [e]
+    print(type(Input))
+    Manhattan(Input)
     #provide room for user input here
 
 
