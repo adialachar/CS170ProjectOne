@@ -12,7 +12,7 @@ def MisplacedTileCalculator(list): #Calculates and returns the number of misplac
     MisplacedTiles = 0
     for i in range (0,len(list)):
 
-        for j in range (0,len(list)):
+        for j in range (0,len(list)): 
             if (solution[i][j] != list[i][j]):
                 MisplacedTiles += 1
 
@@ -46,7 +46,7 @@ def ManhattanDistanceCalculator(list): #Calculates and returns the Manhattan dis
 
 
 
-def InputFormatting(puzzle, a, b):
+def InputFormatting(puzzle, a, b): #turns the user input into a dictionary
 
 
     a = {'puzzle': puzzle, 'g(n)': int(a), 'h(n)': int(b)}
@@ -56,27 +56,26 @@ def InputFormatting(puzzle, a, b):
 
 
 
-def expand(dict, heuristicCalculator):
+def expand(dict, heuristicCalculator): #responsible for expanding the node passed in and returning a list of nodes resulting from expansion
 
-    #find the 0
+    
     puzzle = dict['puzzle']
 
-    for i in range (0,len(puzzle)):
+    for i in range (0,len(puzzle)): #loop to find where the zero or 'free' tile is
         for j in range (0,len(puzzle)):
-            print(puzzle[i][j])
+            #print(puzzle[i][j])
             if (puzzle[i][j] == 0):
                 a = deepcopy(i)
                 b = deepcopy(j)
 
 
-    print("This should be a zero --> {}".format(puzzle[a][b]))
     
     up = False
     down = False
     left = False
     right = False
 
-    if (a == 0):
+    if (a == 0): #if the tile is in the top row, it can only move down in the vertical direction
         down = True
     elif (a == 1):
         down = True
@@ -94,38 +93,34 @@ def expand(dict, heuristicCalculator):
         left = True
     
     
-    print( "left {0}, right {1}, up {2}, down {3}".format(left, right, up, down))
+   # print( "left {0}, right {1}, up {2}, down {3}".format(left, right, up, down))
 
-    children = []
+    children = [] #list to be returned
 
     if(left):
         LeftChange = deepcopy(dict)
-        #swap we are using for now
+        #swaps the free tile and the tile directly to the left of it, if possible
         temp = LeftChange['puzzle'][a][b - 1]
         LeftChange['puzzle'][a][b - 1] = LeftChange['puzzle'][a][b]
         LeftChange['puzzle'][a][b] = temp
-        #print("LEft Boi")
-        #print(LeftChange['puzzle'])
-        children.append(LeftChange)
-        #LeftChange['g(n)'] += 1
-        #LeftChange['h(n)'] = MannhattanDistanceCalculator(LeftChange['puzzle'])
+        children.append(LeftChange) 
+
 
     if(right):
         RightChange = deepcopy(dict)
-
+        #swaps the free tile and the tile directly to the right, if possible
         temp = RightChange['puzzle'][a][b + 1]
         RightChange['puzzle'][a][b+1] = RightChange['puzzle'][a][b]
         RightChange['puzzle'][a][b] = temp
         children.append(RightChange)
     
-        #same as above
+        
     if(up):
         UpChange = deepcopy(dict)
+        #swaps the free tile and the tile directly aboce it, if possible
         temp = UpChange['puzzle'][a - 1][b]
         UpChange['puzzle'][a - 1][b] = UpChange['puzzle'][a][b]
         UpChange['puzzle'][a][b] = temp
-        #print("Up Boi")
-        #print(UpChange['puzzle'])
         children.append(UpChange)
 
 
@@ -133,25 +128,24 @@ def expand(dict, heuristicCalculator):
 
     if(down):
         DownChange = deepcopy(dict)
+        #swaps the free tile and the tile directly below it, if possible
         temp = DownChange['puzzle'][a + 1][b]
         DownChange['puzzle'][a + 1][b] = DownChange['puzzle'][a][b]
         DownChange['puzzle'][a][b] = temp
-        #print("Down Boi")
-        #print(DownChange['puzzle'])
         children.append(DownChange)
 
 
-    for i in range (0, len(children)):
+    for i in range (0, len(children)): #now we give each of the new nodes their proper heuristic
 
-        children[i]['g(n)'] += 1
-        children[i]['h(n)'] = heuristicCalculator(children[i]['puzzle'])
-        #print("The manhattan distance for this node is {}".format(children[i]['h(n)']))
+        children[i]['g(n)'] += 1 #Increments the depth of the nodes
+        children[i]['h(n)'] = heuristicCalculator(children[i]['puzzle']) #calculates the proper h(n) value depending on what heuristic the user wanted
+        
 
 
     return children
     
 
-#def expandMisplacedTile():
+
 
 
 
@@ -175,24 +169,23 @@ def UniformCostCalculator(list):
 
 
     
+maxQlength = [] #keeps track of the max queue length of the input queue
 
 
 
+def ASTAR(list, heuristicCalculator, nodesExpanded):
 
-def ASTAR(list, heuristicCalculator):
-
-    #solution = ([1,2,3] , [4,5,6] , [7,8,0])
+    
         
-    if (len(list) == 0):
+    if (len(list) == 0): #if EMPTY(nodes) then return failure
         return False
 
-    #node = list.pop([0])
+    maxQlength.append(len(list))
 
-    #find the min of the heuristics, and then only expand that one. ahhhh ok
+    
     minimum = 9999
     minimumIndex = 0
-    for i in range (0, len(list)):
-            #find the min of the heuristics
+    for i in range (0, len(list)): #This set of loops finds the puzzle in the list with the lowest f(n), which wil become the node that is evaluated
             if ((list[i]['g(n)'] + list[i]['h(n)']) < minimum):
                 minimumIndex = deepcopy(i)
                 minimum = list[i]['g(n)'] + list[i]['h(n)']
@@ -202,28 +195,41 @@ def ASTAR(list, heuristicCalculator):
    
 
 
-    node = list.pop(minimumIndex) 
-    print(node) 
+    node = list.pop(minimumIndex) #node = RemoveFront(nodes) 
+    
+    print("Currently, the best node to expand is")
+    for i in range (0, len(node['puzzle'])):
+        print()
+        for j in range (0, len(node['puzzle'])):
+            print(node['puzzle'][i][j] , end = ' ')
+    print()
+    print("With a g(n) of {} and a h(n) of {}".format(node['g(n)'], node['h(n)']))
+    print()
+    
+    #print(node)
 
-    #if (node['puzzle'] == solution):
-     #   return node
 
+    # these loops just check if the current state is the goal state
     counter = 0
     for i in range (0, 3):
         for j in range (0,3):
             if node['puzzle'][i][j] == solution[i][j]:
                 counter += 1
 
-    if(counter == 9):
+    if(counter == 9): #this verifires that each element in the list is the same as each element in the solution
+        print("Success!")
+        print("To solve this problem, the search algorithm expanded a total of {} nodes".format(nodesExpanded))
+        print("The maximum number of nodes in the queue at any one time was {}".format(max(maxQlength)))
+        print("The depth of the goal node was {}".format(node['g(n)']))
         return node
 
 
 
 
-    mergedlist = list + expand(node,heuristicCalculator)
-    #then just make a recrusive call with the new list appended to the old one, right?
-    #oh its not that simple
-    return ASTAR(mergedlist,heuristicCalculator)
+    mergedlist = list + expand(node,heuristicCalculator) #nodes = queueing-function(node, expand(node, problem.operator)
+    nodesExpanded += 1
+    
+    return ASTAR(mergedlist,heuristicCalculator, nodesExpanded) #recursive call to repeat process 
     
 
 
@@ -236,25 +242,10 @@ def main():
     puzzle = list(([0,0,0], [0,0,0], [0,0,0]))
     puzzleOne = list(([1,2,3], [4,6,0], [7,5,8]))
     puzzleTwo = list(([1,2,0], [4,6,3], [7,5,8]))
-    #a = ManhattanDistanceCalculator(puzzleOne)
-    #b = ManhattanDistanceCalculator(puzzleTwo)
-    #print("Manhattan")
-    #print(a)
-    #print(b)
-    #c = MisplacedTileCalculator(puzzleOne)
-    #d = MisplacedTileCalculator(puzzleTwo)
-    #print("Misplaced Tiles")
-    #print(c)
-    #print(d)
     e = InputFormatting(puzzleOne,0,0)
-    print(e['puzzle'])
-    print(e['g(n)'])
-    print(e['h(n)'])
-    #expandManhattan(e)
-    #Input = [e]
+    
     print("Welcome to Aditya Acharya's 8-puzzle solver.")
     print("Type '1' to use a default puzzle, or '2' to enter your own puzzle.")
-    #userChoice = input("Type '1' to use a default puzzle, or '2' to enter your own puzzle.")
     userChoice = int(input())
 
     if(userChoice == 2):
@@ -287,27 +278,22 @@ def main():
                 e['puzzle'][2][counter] = int(c[i])
                 counter += 1
 
-        print(e['puzzle'])
+        #print(e['puzzle'])
 
     Input = [e]
 
-        #figure out how to take 3 numbers from the thing
-    print("HELLO ADITYA. The length of solution is {}".format(len(solution)))
-    #print(type(Input))
-    #Manhattan(Input)
-    #provide room for user input here
-    
+
     print("Enter your choice of algorithm")
     print(" 1. Uniform Cost Search")
     print(" 2. A* with the Misplaced Tile heruistic.")
     print(" 3. A* with the Manhattan distance heuristic")
     userChoice = int(input())
     if userChoice == 1:
-        ASTAR(Input,UniformCostCalculator) 
+        ASTAR(Input,UniformCostCalculator, 0) 
     elif userChoice == 2:
-        ASTAR(Input, MisplacedTileCalculator)
+        ASTAR(Input, MisplacedTileCalculator, 0)
     elif userChoice == 3:
-        ASTAR(Input, ManhattanDistanceCalculator)
+        ASTAR(Input, ManhattanDistanceCalculator, 0)
     
     
 
