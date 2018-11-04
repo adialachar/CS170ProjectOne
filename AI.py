@@ -1,9 +1,9 @@
 from copy import deepcopy 
-
+import sys
 
 solution = ([1,2,3], [4,5,6], [7,8,0]) #The solution to the 8-tile problem. 
 #If you want to change the goal state, change this array
- 
+sys.setrecursionlimit(15000)
 
 
 
